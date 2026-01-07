@@ -138,7 +138,16 @@
 </head>
 <body>
 
-<h1>⚽ Fotball Resultattavle</h1>
+<div id="lock" style="position:fixed;inset:0;background:#0f1115;display:flex;align-items:center;justify-content:center;z-index:9999;">
+  <div class="card" style="max-width:320px;width:100%;text-align:center;">
+    <h3>Skriv inn passord</h3>
+    <input type="password" id="pw" placeholder="Passord" />
+    <button onclick="unlock()">Lås opp</button>
+    <p id="pwError" style="color:#ff453a;display:none;margin-top:10px;">Feil passord</p>
+  </div>
+</div>
+
+<h1>⚽ Resultattavle</h1>⚽ Resultattavle</h1>
 
 <div class="card">
   <input id="teamA" placeholder="Lag A navn" />
@@ -187,6 +196,14 @@
 </div>
 
 <script>
+  function unlock() {
+    const p = document.getElementById('pw').value;
+    if (p === 'Bogafjell') {
+      document.getElementById('lock').style.display = 'none';
+    } else {
+      document.getElementById('pwError').style.display = 'block';
+    }
+  }
   let scoreA = 0;
   let scoreB = 0;
   let secondsElapsed = 0;
@@ -245,8 +262,7 @@
       teamA: nameA.innerText,
       teamB: nameB.innerText,
       scoreA, scoreB,
-      playersA: playersA.value.split('
-').filter(p => p.trim()),
+      playersA: playersA.value.split('\n').filter(p => p.trim()),
       date: String(d.getDate()).padStart(2,'0') + '.' + String(d.getMonth()+1).padStart(2,'0') + '.' + d.getFullYear()
     };
     const games = JSON.parse(localStorage.getItem('soccerGames') || '[]');
