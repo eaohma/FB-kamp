@@ -147,7 +147,7 @@
   </div>
 </div>
 
-<h1>⚽ Resultattavle</h1>⚽ Resultattavle</h1>
+<h1>⚽ Resultattavle</h1>
 
 <div class="card">
   <input id="teamA" placeholder="Lag A navn" />
@@ -161,7 +161,7 @@
   <div class="row">
     <button onclick="startTimer()">Start</button>
     <button class="secondary" onclick="pauseTimer()">Pause</button>
-    <button class="secondary" onclick="endTimer()">Avslutt</button>
+    <button class="secondary" onclick="resetTimer()">Nullstill</button>
   </div>
 </div>
 
@@ -207,6 +207,7 @@
   let scoreA = 0;
   let scoreB = 0;
   let secondsElapsed = 0;
+  let timerStartTimestamp = null;
   let timerInterval = null;
   let timerRunning = false;
 
@@ -239,20 +240,30 @@
   function startTimer() {
     if (timerRunning) return;
     timerRunning = true;
-    timerInterval = setInterval(() => {
-      secondsElapsed++;
-      timerEl.innerText = formatTime(secondsElapsed);
-    }, 1000);
+    if (!timerStartTimestamp) {
+      timerStartTimestamp = Date.now() - secondsElapsed * 1000;
+    }
+    timerInterval = setInterval(updateTimerFromTimestamp, 1000);
   }
 
   function pauseTimer() {
     timerRunning = false;
     clearInterval(timerInterval);
+    updateTimerFromTimestamp();
   }
 
-  function endTimer() {
-    pauseTimer();
-    alert('Kampen ble avsluttet på ' + formatTime(secondsElapsed));
+  function resetTimer() {
+    timerRunning = false;
+    clearInterval(timerInterval);
+    secondsElapsed = 0;
+    timerStartTimestamp = null;
+    timerEl.innerText = '00:00';
+  }
+
+  function updateTimerFromTimestamp() {
+    if (!timerStartTimestamp) return;
+    secondsElapsed = Math.floor((Date.now() - timerStartTimestamp) / 1000);
+    timerEl.innerText = formatTime(secondsElapsed);
   }
 
   function saveGame() {
@@ -272,8 +283,10 @@
   }
 
   function resetGame() {
-    scoreA = scoreB = secondsElapsed = 0;
-    scoreAEl.innerText = scoreBEl.innerText = timerEl.innerText = '0';
+    scoreA = scoreB = 0;
+    resetTimer();
+    scoreAEl.innerText = '0';
+    scoreBEl.innerText = '0';
   }
 
   function deleteGame(i) {
