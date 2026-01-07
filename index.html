@@ -28,6 +28,10 @@
     li{background:var(--secondary);border-radius:16px;padding:12px;margin-bottom:12px;font-size:14px}
     li button{margin-top:10px;width:100%;background:var(--danger)}
     small{color:var(--muted)}
+    .badge{display:inline-block;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700;margin-left:8px}
+    .win{background:#2ecc71;color:#102a1c}
+    .draw{background:#f1c40f;color:#3a2f00}
+    .loss{background:#e74c3c;color:#2a0e0e}
   </style>
 </head>
 <body>
@@ -44,6 +48,10 @@
 
 <div class="card">
   <input id="teamA" placeholder="Lag A navn" />
+  <div style="display:flex;gap:10px;margin-bottom:10px">
+    <button id="homeBtn" class="secondary">Hjemmekamp</button>
+    <button id="awayBtn" class="secondary">Bortekamp</button>
+  </div>
   <textarea id="playersA" placeholder="Spillere Lag A (én per linje)"></textarea>
   <input id="teamB" placeholder="Lag B navn" />
   <button id="setup">Klargjør kamp</button>
@@ -86,8 +94,13 @@ document.getElementById('loginBtn').addEventListener('click',()=>{
 });
 
 // STATE
+let matchType = 'Hjemmekamp';
 let players={}, scoreB=0;
 const $=id=>document.getElementById(id);
+
+// MATCH TYPE TOGGLE
+$('homeBtn').onclick=()=>{ matchType='Hjemmekamp'; $('homeBtn').style.background='var(--primary)'; $('awayBtn').style.background='var(--secondary)'; };
+$('awayBtn').onclick=()=>{ matchType='Bortekamp'; $('awayBtn').style.background='var(--primary)'; $('homeBtn').style.background='var(--secondary)'; };
 
 // SETUP
 $('setup').onclick=()=>{
@@ -125,6 +138,7 @@ $('bMinus').onclick=()=>{ scoreB=Math.max(0,scoreB-1); $('scoreB').textContent=s
 $('save').onclick=()=>{
   const d=new Date();
   const game={
+    matchType,
     teamA:$('nameA').textContent,
     teamB:$('nameB').textContent,
     scoreA:$('scoreA').textContent,
@@ -139,12 +153,17 @@ $('save').onclick=()=>{
 // RENDER
 function render(){ $('games').innerHTML=''; (JSON.parse(localStorage.getItem('simpleGames'))||[]).forEach((g,i)=>{
   const li=document.createElement('li');
-  li.innerHTML=`<strong>${g.teamA} ${g.scoreA} – ${g.scoreB} ${g.teamB}</strong><br>${g.date}`;
+  const a=Number(g.scoreA), b=Number(g.scoreB);
+  let badge='', cls='';
+  if(a>b){ badge='Seier'; cls='win'; }
+  else if(a===b){ badge='Uavgjort'; cls='draw'; }
+  else { badge='Tap'; cls='loss'; }
+  li.innerHTML=`<strong>${g.teamA} (${g.matchType}) ${g.scoreA} – ${g.scoreB} ${g.teamB}</strong> <span class="badge ${cls}">${badge}</span><br>${g.date}`;
   Object.entries(g.players)
     .sort((a,b)=>b[1]-a[1])
     .forEach(([p,v])=>li.innerHTML+=`<br><small>${p}: ${v} mål</small>`);
-  const b=document.createElement('button'); b.textContent='Slett'; b.onclick=()=>{if(confirm('Slette kamp?')){const a=JSON.parse(localStorage.getItem('simpleGames'));a.splice(i,1);localStorage.setItem('simpleGames',JSON.stringify(a));render();}};
-  li.appendChild(b); $('games').appendChild(li);
+  const delBtn=document.createElement('button'); delBtn.textContent='Slett'; delBtn.onclick=()=>{if(confirm('Slette kamp?')){const arr=JSON.parse(localStorage.getItem('simpleGames'));arr.splice(i,1);localStorage.setItem('simpleGames',JSON.stringify(arr));render();}};
+  li.appendChild(delBtn); $('games').appendChild(li);
 });}
 render();
 </script>
