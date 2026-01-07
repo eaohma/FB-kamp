@@ -27,7 +27,10 @@
     .minus{background:var(--danger)}
     .score{min-width:32px;text-align:center;font-size:24px}
     #timer{font-size:38px;font-weight:700;text-align:center;margin-bottom:14px}
-    .players{display:flex;flex-wrap:wrap;gap:10px}
+    .players{display:flex;flex-direction:column;gap:10px}
+    .player{display:flex;align-items:center;justify-content:space-between;background:var(--secondary);border-radius:14px;padding:10px 14px;font-size:15px}
+    .player .nameBtn{flex:1;text-align:left;background:var(--primary);margin-right:10px}
+    .player .minusBtn{background:var(--danger);width:48px;height:48px;border-radius:12px;font-size:22px}
     .player{background:var(--secondary);border-radius:14px;padding:10px 14px;font-size:14px}
     .player button{margin-left:6px;padding:6px 10px;border-radius:10px;font-size:14px}
     ul{list-style:none;padding:0;margin:0}
@@ -42,7 +45,7 @@
   <div class="card" style="max-width:320px;width:100%;text-align:center;">
     <h3>Skriv inn passord</h3>
     <input type="password" id="pw" placeholder="Passord" />
-    <button onclick="unlock()">Lås opp</button>
+    <button id="loginBtn">Lås opp</button>
     <p id="pwError" style="color:#ff453a;display:none;margin-top:10px;">Feil passord</p>
   </div>
 </div>
@@ -120,9 +123,14 @@ const pwError=document.getElementById('pwError');
 function unlock() {
   const entered = document.getElementById('pw').value;
   if (entered === pw) {
-    document.getElementById('lock').style.display = 'none';
-    document.getElementById('pwError').style.display = 'none';
+    lock.style.display = 'none';
+    pwError.style.display = 'none';
   } else {
+    pwError.style.display = 'block';
+  }
+}
+
+document.getElementById('loginBtn').addEventListener('click', unlock); else {
     document.getElementById('pwError').style.display = 'block';
   }
 }
@@ -131,42 +139,51 @@ function updateNames(){nameA.innerText=teamA.value||'Lag A';nameB.innerText=team
 function setupPlayers(){
   playerData={};
   playerButtons.innerHTML='';
-  playersA.value.split('\\n').filter(p=>p.trim()).forEach(name=>{
-    const playerName = name.trim();
+  playersA.value.split('\n').filter(p=>p.trim()).forEach(name=>{
+    const playerName=name.trim();
     playerData[playerName]={goals:0,times:[]};
 
-    const d=document.createElement('div');
-    d.className='player';
+    const row=document.createElement('div');
+    row.className='player';
 
-    const s=document.createElement('span');
-    s.innerText=`${playerName}: 0`;
+    const nameBtn=document.createElement('button');
+    nameBtn.className='nameBtn';
+    nameBtn.type='button';
+    nameBtn.textContent=`${playerName} (0)`;
+    nameBtn.dataset.player=playerName;
 
-    const plus=document.createElement('button');
-    plus.type='button';
-    plus.innerText='+';
+    const minusBtn=document.createElement('button');
+    minusBtn.className='minusBtn';
+    minusBtn.type='button';
+    minusBtn.textContent='−';
+    minusBtn.dataset.player=playerName;
 
-    const minus=document.createElement('button');
-    minus.type='button';
-    minus.innerText='−';
-
-    plus.addEventListener('click',()=>updatePlayerGoal(playerName,1,s));
-    minus.addEventListener('click',()=>updatePlayerGoal(playerName,-1,s));
-
-    d.appendChild(s);
-    d.appendChild(plus);
-    d.appendChild(minus);
-    playerButtons.appendChild(d);
+    row.appendChild(nameBtn);
+    row.appendChild(minusBtn);
+    playerButtons.appendChild(row);
   });
   updateNames();
   updateScoreA();
 }
 
-function updatePlayerGoal(player,delta,span){
-  const d=playerData[player];
+function updatePlayerGoal(player,delta){
+  const d = playerData[player];
   if(!d) return;
-  if(delta===1){d.goals++;d.times.push(timerEl.innerText);} 
-  if(delta===-1 && d.goals>0){d.goals--;d.times.pop();}
-  span.innerText=`${player}: ${d.goals}`;
+
+  if(delta===1){
+    d.goals++;
+    d.times.push(timerEl.innerText);
+  }
+  if(delta===-1 && d.goals>0){
+    d.goals--;
+    d.times.pop();
+  }
+
+  document.querySelectorAll('.nameBtn').forEach(btn=>{
+    if(btn.dataset.player===player){
+      btn.textContent = `${player} (${d.goals})`;
+    }
+  });
   updateScoreA();
 }
 
@@ -193,8 +210,15 @@ function saveGame(){
 
   const game={teamA:nameA.innerText,teamB:nameB.innerText,scoreA:scoreAEl.innerText,scoreB,playersA:playerData,date:`${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()}`};
   const g=JSON.parse(localStorage.getItem('soccerGames')||'[]');
-  g.push(game);localStorage.setItem('soccerGames',JSON.stringify(g));
-  renderGames();
+  g.push(game);
+  localStorage.setItem('soccerGames',JSON.stringify(g));
+  playerButtons.addEventListener('click',e=>{
+  const p=e.target.dataset.player;
+  if(!p) return;
+  if(e.target.classList.contains('nameBtn')) updatePlayerGoal(p,1);
+  if(e.target.classList.contains('minusBtn')) updatePlayerGoal(p,-1);
+});
+renderGames();
 }
 
 function exportPDF(){
