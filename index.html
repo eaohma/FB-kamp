@@ -3,137 +3,37 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Fotball Resultattavle</title>
+  <title>Resultattavle</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
   <style>
     :root {
-      --bg: #0f1115;
-      --card: #1a1d23;
-      --primary: #0a84ff;
-      --danger: #ff453a;
-      --secondary: #2a2f3a;
-      --text: #f5f5f7;
-      --muted: #9ba1ad;
+      --bg:#0f1115; --card:#1a1d23; --primary:#0a84ff; --danger:#ff453a;
+      --secondary:#2a2f3a; --text:#f5f5f7; --muted:#9ba1ad;
     }
-
-    body {
-      margin: 0;
-      padding: env(safe-area-inset-top) 16px env(safe-area-inset-bottom);
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
-      background: var(--bg);
-      color: var(--text);
-    }
-
-    h1 {
-      text-align: center;
-      font-size: 26px;
-      margin: 12px 0 20px;
-      font-weight: 700;
-    }
-
-    h3 { margin: 0 0 12px; font-size: 17px; color: var(--muted); }
-
-    .card {
-      background: var(--card);
-      border-radius: 22px;
-      padding: 16px;
-      margin-bottom: 16px;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.4);
-    }
-
-    /* Inputs: narrower + centered */
-    input, textarea {
-      width: 90%;
-      display: block;
-      margin: 0 auto 10px;
-      padding: 8px 10px;
-      font-size: 14px;
-      border-radius: 12px;
-      border: none;
-      background: var(--secondary);
-      color: var(--text);
-    }
-
-    textarea { resize: none; height: 56px; }
-
-    button {
-      padding: 14px;
-      font-size: 16px;
-      border-radius: 18px;
-      border: none;
-      font-weight: 600;
-      background: var(--primary);
-      color: white;
-    }
-
-    button.secondary {
-      background: var(--secondary);
-      color: var(--text);
-    }
-
-    .row { display: flex; gap: 12px; }
-    .row button { flex: 1; }
-
-    /* Score rows */
-    .score-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin: 16px 0;
-      font-size: 22px;
-      font-weight: 600;
-    }
-
-    .score-controls {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    /* Big + / - buttons */
-    .score-controls button {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      font-size: 30px;
-      font-weight: 700;
-      line-height: 1;
-    }
-
-    .minus { background: var(--danger); }
-
-    .score {
-      min-width: 32px;
-      text-align: center;
-      font-size: 24px;
-    }
-
-    #timer {
-      font-size: 38px;
-      font-weight: 700;
-      text-align: center;
-      margin-bottom: 14px;
-    }
-
-    ul { list-style: none; padding: 0; margin: 0; }
-
-    li {
-      background: var(--secondary);
-      border-radius: 16px;
-      padding: 12px;
-      margin-bottom: 12px;
-      font-size: 14px;
-    }
-
-    li button {
-      margin-top: 10px;
-      width: 100%;
-      background: var(--danger);
-    }
-
-    small { color: var(--muted); }
+    body{margin:0;padding:env(safe-area-inset-top) 16px env(safe-area-inset-bottom);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",sans-serif;background:var(--bg);color:var(--text)}
+    h1{text-align:center;font-size:26px;margin:12px 0 20px;font-weight:700}
+    h3{margin:0 0 12px;font-size:17px;color:var(--muted)}
+    .card{background:var(--card);border-radius:22px;padding:16px;margin-bottom:16px;box-shadow:0 15px 40px rgba(0,0,0,.4)}
+    input,textarea{width:90%;display:block;margin:0 auto 10px;padding:8px 10px;font-size:14px;border-radius:12px;border:none;background:var(--secondary);color:var(--text)}
+    textarea{resize:none;height:56px}
+    button{padding:14px;font-size:16px;border-radius:18px;border:none;font-weight:600;background:var(--primary);color:#fff}
+    button.secondary{background:var(--secondary)}
+    .row{display:flex;gap:12px}.row button{flex:1}
+    .score-row{display:flex;justify-content:space-between;align-items:center;margin:16px 0;font-size:22px;font-weight:600}
+    .score-controls{display:flex;align-items:center;gap:14px}
+    .score-controls button{width:64px;height:64px;border-radius:50%;font-size:30px;font-weight:700}
+    .minus{background:var(--danger)}
+    .score{min-width:32px;text-align:center;font-size:24px}
+    #timer{font-size:38px;font-weight:700;text-align:center;margin-bottom:14px}
+    .players{display:flex;flex-wrap:wrap;gap:10px}
+    .player{background:var(--secondary);border-radius:14px;padding:10px 14px;font-size:14px}
+    .player button{margin-left:6px;padding:6px 10px;border-radius:10px;font-size:14px}
+    ul{list-style:none;padding:0;margin:0}
+    li{background:var(--secondary);border-radius:16px;padding:12px;margin-bottom:12px;font-size:14px}
+    li button{margin-top:10px;width:100%;background:var(--danger)}
+    small{color:var(--muted)}
   </style>
 </head>
 <body>
@@ -153,6 +53,7 @@
   <input id="teamA" placeholder="Lag A navn" />
   <textarea id="playersA" placeholder="Spillere Lag A (én per linje)"></textarea>
   <input id="teamB" placeholder="Lag B navn" />
+  <button class="secondary" onclick="setupPlayers()">Klargjør spillere</button>
 </div>
 
 <div class="card">
@@ -168,19 +69,17 @@
 <div class="card">
   <div class="score-row">
     <span id="nameA">Lag A</span>
-    <div class="score-controls">
-      <button class="minus" onclick="changeGoal('A', -1)">−</button>
-      <span class="score" id="scoreA">0</span>
-      <button onclick="changeGoal('A', 1)">+</button>
-    </div>
+    <span class="score" id="scoreA">0</span>
   </div>
+
+  <div class="players" id="playerButtons"></div>
 
   <div class="score-row">
     <span id="nameB">Lag B</span>
     <div class="score-controls">
-      <button class="minus" onclick="changeGoal('B', -1)">−</button>
+      <button class="minus" onclick="changeGoalB(-1)">−</button>
       <span class="score" id="scoreB">0</span>
-      <button onclick="changeGoal('B', 1)">+</button>
+      <button onclick="changeGoalB(1)">+</button>
     </div>
   </div>
 </div>
@@ -188,6 +87,7 @@
 <div class="card">
   <button onclick="saveGame()">Lagre kampresultat</button>
   <button class="secondary" onclick="resetGame()">Nullstill kamp</button>
+  <button class="secondary" onclick="exportPDF()">Eksporter PDF</button>
 </div>
 
 <div class="card">
@@ -195,124 +95,132 @@
   <ul id="games"></ul>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
-  function unlock() {
-    const p = document.getElementById('pw').value;
-    if (p === 'Bogafjell') {
-      document.getElementById('lock').style.display = 'none';
-    } else {
-      document.getElementById('pwError').style.display = 'block';
-    }
+const pw='Bogafjell';
+let scoreB=0;
+let playerData={}; // { player: { goals: number, times: [] } }
+let seasonTotals = JSON.parse(localStorage.getItem('seasonTotals')||'{}');
+
+let secondsElapsed=0, timerStartTimestamp=null, timerInterval=null, timerRunning=false;
+
+const scoreAEl=document.getElementById('scoreA');
+const scoreBEl=document.getElementById('scoreB');
+const timerEl=document.getElementById('timer');
+const nameA=document.getElementById('nameA');
+const nameB=document.getElementById('nameB');
+const teamA=document.getElementById('teamA');
+const teamB=document.getElementById('teamB');
+const playersA=document.getElementById('playersA');
+const playerButtons=document.getElementById('playerButtons');
+const games=document.getElementById('games');
+const lock=document.getElementById('lock');
+const pwError=document.getElementById('pwError');
+
+function unlock() {
+  const entered = document.getElementById('pw').value;
+  if (entered === pw) {
+    document.getElementById('lock').style.display = 'none';
+    document.getElementById('pwError').style.display = 'none';
+  } else {
+    document.getElementById('pwError').style.display = 'block';
   }
-  let scoreA = 0;
-  let scoreB = 0;
-  let secondsElapsed = 0;
-  let timerStartTimestamp = null;
-  let timerInterval = null;
-  let timerRunning = false;
+}
+function updateNames(){nameA.innerText=teamA.value||'Lag A';nameB.innerText=teamB.value||'Lag B'}
 
-  const scoreAEl = document.getElementById('scoreA');
-  const scoreBEl = document.getElementById('scoreB');
-  const nameA = document.getElementById('nameA');
-  const nameB = document.getElementById('nameB');
-  const timerEl = document.getElementById('timer');
+function setupPlayers(){
+  playerData={};
+  playerButtons.innerHTML='';
+  playersA.value.split('\\n').filter(p=>p.trim()).forEach(name=>{
+    const playerName = name.trim();
+    playerData[playerName]={goals:0,times:[]};
 
-  function updateNames() {
-    nameA.innerText = teamA.value || 'Lag A';
-    nameB.innerText = teamB.value || 'Lag B';
-  }
+    const d=document.createElement('div');
+    d.className='player';
 
-  function changeGoal(team, delta) {
-    if (team === 'A') {
-      scoreA = Math.max(0, scoreA + delta);
-      scoreAEl.innerText = scoreA;
-    } else {
-      scoreB = Math.max(0, scoreB + delta);
-      scoreBEl.innerText = scoreB;
-    }
-    updateNames();
-  }
+    const s=document.createElement('span');
+    s.innerText=`${playerName}: 0`;
 
-  function formatTime(s) {
-    return String(Math.floor(s / 60)).padStart(2,'0') + ':' + String(s % 60).padStart(2,'0');
-  }
+    const plus=document.createElement('button');
+    plus.type='button';
+    plus.innerText='+';
 
-  function startTimer() {
-    if (timerRunning) return;
-    timerRunning = true;
-    if (!timerStartTimestamp) {
-      timerStartTimestamp = Date.now() - secondsElapsed * 1000;
-    }
-    timerInterval = setInterval(updateTimerFromTimestamp, 1000);
-  }
+    const minus=document.createElement('button');
+    minus.type='button';
+    minus.innerText='−';
 
-  function pauseTimer() {
-    timerRunning = false;
-    clearInterval(timerInterval);
-    updateTimerFromTimestamp();
-  }
+    plus.addEventListener('click',()=>updatePlayerGoal(playerName,1,s));
+    minus.addEventListener('click',()=>updatePlayerGoal(playerName,-1,s));
 
-  function resetTimer() {
-    timerRunning = false;
-    clearInterval(timerInterval);
-    secondsElapsed = 0;
-    timerStartTimestamp = null;
-    timerEl.innerText = '00:00';
-  }
+    d.appendChild(s);
+    d.appendChild(plus);
+    d.appendChild(minus);
+    playerButtons.appendChild(d);
+  });
+  updateNames();
+  updateScoreA();
+}
 
-  function updateTimerFromTimestamp() {
-    if (!timerStartTimestamp) return;
-    secondsElapsed = Math.floor((Date.now() - timerStartTimestamp) / 1000);
-    timerEl.innerText = formatTime(secondsElapsed);
-  }
+function updatePlayerGoal(player,delta,span){
+  const d=playerData[player];
+  if(!d) return;
+  if(delta===1){d.goals++;d.times.push(timerEl.innerText);} 
+  if(delta===-1 && d.goals>0){d.goals--;d.times.pop();}
+  span.innerText=`${player}: ${d.goals}`;
+  updateScoreA();
+}
 
-  function saveGame() {
-    updateNames();
-    const d = new Date();
-    const game = {
-      teamA: nameA.innerText,
-      teamB: nameB.innerText,
-      scoreA, scoreB,
-      playersA: playersA.value.split('\n').filter(p => p.trim()),
-      date: String(d.getDate()).padStart(2,'0') + '.' + String(d.getMonth()+1).padStart(2,'0') + '.' + d.getFullYear()
-    };
-    const games = JSON.parse(localStorage.getItem('soccerGames') || '[]');
-    games.push(game);
-    localStorage.setItem('soccerGames', JSON.stringify(games));
-    renderGames();
-  }
+function updateScoreA(){
+  const total=Object.values(playerData).reduce((a,b)=>a+b.goals,0);
+  scoreAEl.innerText=total;
+}
 
-  function resetGame() {
-    scoreA = scoreB = 0;
-    resetTimer();
-    scoreAEl.innerText = '0';
-    scoreBEl.innerText = '0';
-  }
+function changeGoalB(d){scoreB=Math.max(0,scoreB+d);scoreBEl.innerText=scoreB}
 
-  function deleteGame(i) {
-    if (!confirm('Er du sikker på at du vil slette denne kampen?')) return;
-    const g = JSON.parse(localStorage.getItem('soccerGames') || '[]');
-    g.splice(i,1);
-    localStorage.setItem('soccerGames', JSON.stringify(g));
-    renderGames();
-  }
+function formatTime(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
+function startTimer(){if(timerRunning)return;timerRunning=true;if(!timerStartTimestamp)timerStartTimestamp=Date.now()-secondsElapsed*1000;timerInterval=setInterval(updateTimer,1000)}
+function pauseTimer(){timerRunning=false;clearInterval(timerInterval);updateTimer()}
+function resetTimer(){timerRunning=false;clearInterval(timerInterval);secondsElapsed=0;timerStartTimestamp=null;timerEl.innerText='00:00'}
+function updateTimer(){if(!timerStartTimestamp)return;secondsElapsed=Math.floor((Date.now()-timerStartTimestamp)/1000);timerEl.innerText=formatTime(secondsElapsed)}
 
-  function renderGames() {
-    games.innerHTML = '';
-    JSON.parse(localStorage.getItem('soccerGames') || '[]').forEach((g,i) => {
-      const li = document.createElement('li');
-      li.innerHTML = `<strong>${g.teamA} ${g.scoreA} – ${g.scoreB} ${g.teamB}</strong><br>${g.date}`;
-      if (g.playersA?.length) li.innerHTML += `<br><small>Spillere Lag A: ${g.playersA.join(', ')}</small>`;
-      const b = document.createElement('button');
-      b.innerText = 'Slett';
-      b.onclick = () => deleteGame(i);
-      li.appendChild(b);
-      games.appendChild(li);
-    });
-  }
+function saveGame(){
+  updateNames();
+  const d=new Date();
+  Object.entries(playerData).forEach(([p,v])=>{
+    seasonTotals[p]=(seasonTotals[p]||0)+v.goals;
+  });
+  localStorage.setItem('seasonTotals',JSON.stringify(seasonTotals));
 
+  const game={teamA:nameA.innerText,teamB:nameB.innerText,scoreA:scoreAEl.innerText,scoreB,playersA:playerData,date:`${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()}`};
+  const g=JSON.parse(localStorage.getItem('soccerGames')||'[]');
+  g.push(game);localStorage.setItem('soccerGames',JSON.stringify(g));
   renderGames();
-</script>
+}
 
+function exportPDF(){
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF();
+  let y=10;
+  pdf.text(`Kamp: ${nameA.innerText} ${scoreAEl.innerText} - ${scoreB} ${nameB.innerText}`,10,y);y+=10;
+  Object.entries(playerData).forEach(([p,v])=>{
+    pdf.text(`${p}: ${v.goals} mål (${v.times.join(', ')})`,10,y);y+=8;
+  });
+  pdf.save('kampresultat.pdf');
+}
+
+function resetGame(){scoreB=0;scoreBEl.innerText='0';playerButtons.innerHTML='';playerData={};resetTimer()}
+
+function deleteGame(i){if(!confirm('Er du sikker på at du vil slette denne kampen?'))return;const g=JSON.parse(localStorage.getItem('soccerGames'));g.splice(i,1);localStorage.setItem('soccerGames',JSON.stringify(g));renderGames()}
+
+function renderGames(){games.innerHTML='';(JSON.parse(localStorage.getItem('soccerGames'))||[]).forEach((g,i)=>{
+  const li=document.createElement('li');
+  li.innerHTML=`<strong>${g.teamA} ${g.scoreA} – ${g.scoreB} ${g.teamB}</strong><br>${g.date}`;
+  Object.entries(g.playersA||{}).forEach(([p,v])=>{
+    li.innerHTML+=`<br><small>${p}: ${v.goals} mål</small>`;
+  });
+  const b=document.createElement('button');b.innerText='Slett';b.onclick=()=>deleteGame(i);li.appendChild(b);games.appendChild(li);
+})}
+renderGames();
+</script>
 </body>
 </html>
