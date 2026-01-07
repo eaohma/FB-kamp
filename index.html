@@ -5,34 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Resultattavle</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
   <style>
-    :root {
-      --bg:#0f1115; --card:#1a1d23; --primary:#0a84ff; --danger:#ff453a;
-      --secondary:#2a2f3a; --text:#f5f5f7; --muted:#9ba1ad;
+    :root{
+      --bg:#0f1115;--card:#1a1d23;--primary:#0a84ff;--danger:#ff453a;
+      --secondary:#2a2f3a;--text:#f5f5f7;--muted:#9ba1ad;
     }
     body{margin:0;padding:env(safe-area-inset-top) 16px env(safe-area-inset-bottom);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",sans-serif;background:var(--bg);color:var(--text)}
-    h1{text-align:center;font-size:26px;margin:12px 0 20px;font-weight:700}
-    h3{margin:0 0 12px;font-size:17px;color:var(--muted)}
-    .card{background:var(--card);border-radius:22px;padding:16px;margin-bottom:16px;box-shadow:0 15px 40px rgba(0,0,0,.4)}
-    input,textarea{width:90%;display:block;margin:0 auto 10px;padding:8px 10px;font-size:14px;border-radius:12px;border:none;background:var(--secondary);color:var(--text)}
-    textarea{resize:none;height:56px}
-    button{padding:14px;font-size:16px;border-radius:18px;border:none;font-weight:600;background:var(--primary);color:#fff}
+    h1{text-align:center;margin:16px 0}
+    h3{margin:0 0 10px;color:var(--muted)}
+    .card{background:var(--card);border-radius:22px;padding:16px;margin-bottom:16px}
+    input,textarea{width:100%;padding:10px;border-radius:14px;border:none;background:var(--secondary);color:var(--text);margin-bottom:10px}
+    textarea{resize:none;height:70px}
+    button{padding:14px;border:none;border-radius:18px;font-size:16px;font-weight:600;background:var(--primary);color:#fff}
     button.secondary{background:var(--secondary)}
-    .row{display:flex;gap:12px}.row button{flex:1}
-    .score-row{display:flex;justify-content:space-between;align-items:center;margin:16px 0;font-size:22px;font-weight:600}
-    .score-controls{display:flex;align-items:center;gap:14px}
-    .score-controls button{width:64px;height:64px;border-radius:50%;font-size:30px;font-weight:700}
-    .minus{background:var(--danger)}
-    .score{min-width:32px;text-align:center;font-size:24px}
-    #timer{font-size:38px;font-weight:700;text-align:center;margin-bottom:14px}
-    .players{display:flex;flex-direction:column;gap:10px}
-    .player{display:flex;align-items:center;justify-content:space-between;background:var(--secondary);border-radius:14px;padding:10px 14px;font-size:15px}
-    .player .nameBtn{flex:1;text-align:left;background:var(--primary);margin-right:10px}
-    .player .minusBtn{background:var(--danger);width:48px;height:48px;border-radius:12px;font-size:22px}
-    .player{background:var(--secondary);border-radius:14px;padding:10px 14px;font-size:14px}
-    .player button{margin-left:6px;padding:6px 10px;border-radius:10px;font-size:14px}
+    .playersGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+    .player{display:flex;gap:6px;align-items:center}
+    .player button{flex:1;white-space:nowrap;font-size:14px;padding:10px}
+    .minus{background:var(--danger);max-width:60px}
+    .scoreRow{display:flex;justify-content:space-between;align-items:center;font-size:22px;margin:14px 0}
     ul{list-style:none;padding:0;margin:0}
     li{background:var(--secondary);border-radius:16px;padding:12px;margin-bottom:12px;font-size:14px}
     li button{margin-top:10px;width:100%;background:var(--danger)}
@@ -41,13 +32,12 @@
 </head>
 <body>
 
-<div id="lock" style="position:fixed;inset:0;background:#0f1115;display:flex;align-items:center;justify-content:center;z-index:9999;">
-  <div class="card" style="max-width:320px;width:100%;text-align:center;">
-    <h3>Skriv inn passord</h3>
-    <input type="password" id="pw" placeholder="Passord" />
-    <button id="loginBtn">Lås opp</button>
-    <p id="pwError" style="color:#ff453a;display:none;margin-top:10px;">Feil passord</p>
-  </div>
+<!-- PASSWORD LOCK -->
+<div id="lock" style="position:fixed;inset:0;background:#0f1115;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px">
+  <h1 style="margin-bottom:20px">🔒 Lås opp</h1>
+  <input id="pw" type="password" placeholder="Passord" style="max-width:260px" />
+  <button id="loginBtn" style="max-width:260px;width:100%">Lås opp</button>
+  <p id="pwError" style="color:#ff453a;display:none;margin-top:12px">Feil passord</p>
 </div>
 
 <h1>⚽ Resultattavle</h1>
@@ -56,41 +46,23 @@
   <input id="teamA" placeholder="Lag A navn" />
   <textarea id="playersA" placeholder="Spillere Lag A (én per linje)"></textarea>
   <input id="teamB" placeholder="Lag B navn" />
-  <button class="secondary" onclick="setupPlayers()">Klargjør spillere</button>
+  <button id="setup">Klargjør kamp</button>
 </div>
 
 <div class="card">
-  <h3>⏱️ Kampklokke</h3>
-  <div id="timer">00:00</div>
-  <div class="row">
-    <button onclick="startTimer()">Start</button>
-    <button class="secondary" onclick="pauseTimer()">Pause</button>
-    <button class="secondary" onclick="resetTimer()">Nullstill</button>
-  </div>
-</div>
-
-<div class="card">
-  <div class="score-row">
-    <span id="nameA">Lag A</span>
-    <span class="score" id="scoreA">0</span>
-  </div>
-
-  <div class="players" id="playerButtons"></div>
-
-  <div class="score-row">
-    <span id="nameB">Lag B</span>
-    <div class="score-controls">
-      <button class="minus" onclick="changeGoalB(-1)">−</button>
-      <span class="score" id="scoreB">0</span>
-      <button onclick="changeGoalB(1)">+</button>
+  <div class="scoreRow"><strong id="nameA">Lag A</strong> <span id="scoreA">0</span></div>
+  <div id="players" class="playersGrid"></div>
+  <div class="scoreRow"><strong id="nameB">Lag B</strong>
+    <div>
+      <button class="minus" id="bMinus">−</button>
+      <span id="scoreB">0</span>
+      <button id="bPlus">+</button>
     </div>
   </div>
 </div>
 
 <div class="card">
-  <button onclick="saveGame()">Lagre kampresultat</button>
-  <button class="secondary" onclick="resetGame()">Nullstill kamp</button>
-  <button class="secondary" onclick="exportPDF()">Eksporter PDF</button>
+  <button id="save">Lagre kamp</button>
 </div>
 
 <div class="card">
@@ -98,153 +70,83 @@
   <ul id="games"></ul>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
-const pw='Bogafjell';
-let scoreB=0;
-let playerData={}; // { player: { goals: number, times: [] } }
-let seasonTotals = JSON.parse(localStorage.getItem('seasonTotals')||'{}');
+// PASSWORD
+const PASSWORD = 'Bogafjell';
+const lock = document.getElementById('lock');
+const pwError = document.getElementById('pwError');
 
-let secondsElapsed=0, timerStartTimestamp=null, timerInterval=null, timerRunning=false;
-
-const scoreAEl=document.getElementById('scoreA');
-const scoreBEl=document.getElementById('scoreB');
-const timerEl=document.getElementById('timer');
-const nameA=document.getElementById('nameA');
-const nameB=document.getElementById('nameB');
-const teamA=document.getElementById('teamA');
-const teamB=document.getElementById('teamB');
-const playersA=document.getElementById('playersA');
-const playerButtons=document.getElementById('playerButtons');
-const games=document.getElementById('games');
-const lock=document.getElementById('lock');
-const pwError=document.getElementById('pwError');
-
-function unlock() {
-  const entered = document.getElementById('pw').value;
-  if (entered === pw) {
-    lock.style.display = 'none';
-    pwError.style.display = 'none';
+document.getElementById('loginBtn').addEventListener('click',()=>{
+  if(document.getElementById('pw').value === PASSWORD){
+    lock.style.display='none';
+    pwError.style.display='none';
   } else {
-    pwError.style.display = 'block';
+    pwError.style.display='block';
   }
-}
-
-document.getElementById('loginBtn').addEventListener('click', unlock); else {
-    document.getElementById('pwError').style.display = 'block';
-  }
-}
-function updateNames(){nameA.innerText=teamA.value||'Lag A';nameB.innerText=teamB.value||'Lag B'}
-
-function setupPlayers(){
-  playerData={};
-  playerButtons.innerHTML='';
-  playersA.value.split('\n').filter(p=>p.trim()).forEach(name=>{
-    const playerName=name.trim();
-    playerData[playerName]={goals:0,times:[]};
-
-    const row=document.createElement('div');
-    row.className='player';
-
-    const nameBtn=document.createElement('button');
-    nameBtn.className='nameBtn';
-    nameBtn.type='button';
-    nameBtn.textContent=`${playerName} (0)`;
-    nameBtn.dataset.player=playerName;
-
-    const minusBtn=document.createElement('button');
-    minusBtn.className='minusBtn';
-    minusBtn.type='button';
-    minusBtn.textContent='−';
-    minusBtn.dataset.player=playerName;
-
-    row.appendChild(nameBtn);
-    row.appendChild(minusBtn);
-    playerButtons.appendChild(row);
-  });
-  updateNames();
-  updateScoreA();
-}
-
-function updatePlayerGoal(player,delta){
-  const d = playerData[player];
-  if(!d) return;
-
-  if(delta===1){
-    d.goals++;
-    d.times.push(timerEl.innerText);
-  }
-  if(delta===-1 && d.goals>0){
-    d.goals--;
-    d.times.pop();
-  }
-
-  document.querySelectorAll('.nameBtn').forEach(btn=>{
-    if(btn.dataset.player===player){
-      btn.textContent = `${player} (${d.goals})`;
-    }
-  });
-  updateScoreA();
-}
-
-function updateScoreA(){
-  const total=Object.values(playerData).reduce((a,b)=>a+b.goals,0);
-  scoreAEl.innerText=total;
-}
-
-function changeGoalB(d){scoreB=Math.max(0,scoreB+d);scoreBEl.innerText=scoreB}
-
-function formatTime(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
-function startTimer(){if(timerRunning)return;timerRunning=true;if(!timerStartTimestamp)timerStartTimestamp=Date.now()-secondsElapsed*1000;timerInterval=setInterval(updateTimer,1000)}
-function pauseTimer(){timerRunning=false;clearInterval(timerInterval);updateTimer()}
-function resetTimer(){timerRunning=false;clearInterval(timerInterval);secondsElapsed=0;timerStartTimestamp=null;timerEl.innerText='00:00'}
-function updateTimer(){if(!timerStartTimestamp)return;secondsElapsed=Math.floor((Date.now()-timerStartTimestamp)/1000);timerEl.innerText=formatTime(secondsElapsed)}
-
-function saveGame(){
-  updateNames();
-  const d=new Date();
-  Object.entries(playerData).forEach(([p,v])=>{
-    seasonTotals[p]=(seasonTotals[p]||0)+v.goals;
-  });
-  localStorage.setItem('seasonTotals',JSON.stringify(seasonTotals));
-
-  const game={teamA:nameA.innerText,teamB:nameB.innerText,scoreA:scoreAEl.innerText,scoreB,playersA:playerData,date:`${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()}`};
-  const g=JSON.parse(localStorage.getItem('soccerGames')||'[]');
-  g.push(game);
-  localStorage.setItem('soccerGames',JSON.stringify(g));
-  playerButtons.addEventListener('click',e=>{
-  const p=e.target.dataset.player;
-  if(!p) return;
-  if(e.target.classList.contains('nameBtn')) updatePlayerGoal(p,1);
-  if(e.target.classList.contains('minusBtn')) updatePlayerGoal(p,-1);
 });
-renderGames();
-}
 
-function exportPDF(){
-  const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF();
-  let y=10;
-  pdf.text(`Kamp: ${nameA.innerText} ${scoreAEl.innerText} - ${scoreB} ${nameB.innerText}`,10,y);y+=10;
-  Object.entries(playerData).forEach(([p,v])=>{
-    pdf.text(`${p}: ${v.goals} mål (${v.times.join(', ')})`,10,y);y+=8;
+// STATE
+let players={}, scoreB=0;
+const $=id=>document.getElementById(id);
+
+// SETUP
+$('setup').onclick=()=>{
+  players={}; $('players').innerHTML='';
+  $('playersA').value.split('\n').map(p=>p.trim()).filter(Boolean).forEach(p=>{
+    players[p]=0;
+    const row=document.createElement('div'); row.className='player';
+    const add=document.createElement('button'); add.textContent=`${p} (0)`; add.dataset.p=p;
+    const sub=document.createElement('button'); sub.textContent='−'; sub.className='minus'; sub.dataset.p=p;
+    row.append(add,sub); $('players').appendChild(row);
   });
-  pdf.save('kampresultat.pdf');
-}
+  $('nameA').textContent=$('teamA').value||'Lag A';
+  $('nameB').textContent=$('teamB').value||'Lag B';
+  updateScoreA();
+};
 
-function resetGame(){scoreB=0;scoreBEl.innerText='0';playerButtons.innerHTML='';playerData={};resetTimer()}
+// PLAYER GOALS
+$('players').addEventListener('click',e=>{
+  const btn=e.target;
+  const p=btn.dataset.p;
+  if(!p) return;
+  if(btn.classList.contains('minus')) players[p]=Math.max(0,players[p]-1);
+  else players[p]++;
+  btn.parentElement.querySelector('button:not(.minus)').textContent=`${p} (${players[p]})`;
+  updateScoreA();
+});
 
-function deleteGame(i){if(!confirm('Er du sikker på at du vil slette denne kampen?'))return;const g=JSON.parse(localStorage.getItem('soccerGames'));g.splice(i,1);localStorage.setItem('soccerGames',JSON.stringify(g));renderGames()}
+function updateScoreA(){ $('scoreA').textContent=Object.values(players).reduce((a,b)=>a+b,0); }
 
-function renderGames(){games.innerHTML='';(JSON.parse(localStorage.getItem('soccerGames'))||[]).forEach((g,i)=>{
+// TEAM B
+$('bPlus').onclick=()=>{ scoreB++; $('scoreB').textContent=scoreB; };
+$('bMinus').onclick=()=>{ scoreB=Math.max(0,scoreB-1); $('scoreB').textContent=scoreB; };
+
+// SAVE
+$('save').onclick=()=>{
+  const d=new Date();
+  const game={
+    teamA:$('nameA').textContent,
+    teamB:$('nameB').textContent,
+    scoreA:$('scoreA').textContent,
+    scoreB,
+    players,
+    date:`${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()}`
+  };
+  const g=JSON.parse(localStorage.getItem('simpleGames')||'[]'); g.push(game);
+  localStorage.setItem('simpleGames',JSON.stringify(g)); render();
+};
+
+// RENDER
+function render(){ $('games').innerHTML=''; (JSON.parse(localStorage.getItem('simpleGames'))||[]).forEach((g,i)=>{
   const li=document.createElement('li');
   li.innerHTML=`<strong>${g.teamA} ${g.scoreA} – ${g.scoreB} ${g.teamB}</strong><br>${g.date}`;
-  Object.entries(g.playersA||{}).forEach(([p,v])=>{
-    li.innerHTML+=`<br><small>${p}: ${v.goals} mål</small>`;
-  });
-  const b=document.createElement('button');b.innerText='Slett';b.onclick=()=>deleteGame(i);li.appendChild(b);games.appendChild(li);
-})}
-renderGames();
+  Object.entries(g.players)
+    .sort((a,b)=>b[1]-a[1])
+    .forEach(([p,v])=>li.innerHTML+=`<br><small>${p}: ${v} mål</small>`);
+  const b=document.createElement('button'); b.textContent='Slett'; b.onclick=()=>{if(confirm('Slette kamp?')){const a=JSON.parse(localStorage.getItem('simpleGames'));a.splice(i,1);localStorage.setItem('simpleGames',JSON.stringify(a));render();}};
+  li.appendChild(b); $('games').appendChild(li);
+});}
+render();
 </script>
 </body>
 </html>
